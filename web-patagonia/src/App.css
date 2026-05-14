@@ -26,6 +26,26 @@
   z-index: 1;
 }
 
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: 20;
+  transform: translateY(-140%);
+  border-radius: 999px;
+  padding: 10px 16px;
+  color: var(--snow);
+  background: var(--ink);
+  font-weight: 850;
+  text-decoration: none;
+  box-shadow: 0 18px 38px rgba(13, 37, 41, 0.22);
+  transition: transform 180ms ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 .hero-section {
   min-height: 94vh;
   display: grid;
@@ -202,6 +222,10 @@
 .primary {
   background: var(--moss);
   border-color: var(--moss);
+  color: #10221a;
+}
+
+.dark-text {
   color: #10221a;
 }
 
@@ -393,7 +417,6 @@
   grid-column: span 1;
   display: grid;
   transition:
-    transform 260ms cubic-bezier(0.2, 0.7, 0.2, 1),
     box-shadow 260ms ease,
     border-color 260ms ease;
 }
@@ -404,7 +427,6 @@
 }
 
 .gallery-card:hover {
-  transform: translateY(-8px);
   border-color: rgba(157, 112, 70, 0.3);
   box-shadow: 0 30px 80px rgba(24, 37, 32, 0.17);
 }
@@ -487,7 +509,6 @@
   flex-direction: column;
   justify-content: space-between;
   transition:
-    transform 240ms ease,
     background 240ms ease,
     border-color 240ms ease,
     box-shadow 240ms ease;
@@ -498,7 +519,6 @@
 }
 
 .category-card:hover {
-  transform: translateY(-6px);
   background: rgba(234, 240, 225, 0.94);
   border-color: rgba(54, 83, 58, 0.25);
   box-shadow: 0 28px 70px rgba(24, 37, 32, 0.13);
@@ -597,6 +617,12 @@
 
 .contact-card {
   color: var(--snow);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  padding: 28px;
+  background: rgba(9, 36, 38, 0.78);
+  box-shadow: 0 24px 64px rgba(9, 25, 25, 0.22);
+  backdrop-filter: blur(18px);
 }
 
 .contact-card > span {
@@ -635,48 +661,6 @@
 .footer p {
   color: rgba(251, 249, 242, 0.78);
   font-size: 0.92rem;
-}
-
-.reveal {
-  animation: riseIn 850ms cubic-bezier(0.2, 0.78, 0.2, 1) both;
-}
-
-.gallery-card:nth-child(2),
-.category-card:nth-child(2) {
-  animation-delay: 90ms;
-}
-
-.gallery-card:nth-child(3),
-.category-card:nth-child(3) {
-  animation-delay: 150ms;
-}
-
-.gallery-card:nth-child(4),
-.category-card:nth-child(4) {
-  animation-delay: 210ms;
-}
-
-.gallery-card:nth-child(5),
-.category-card:nth-child(5) {
-  animation-delay: 270ms;
-}
-
-.gallery-card:nth-child(6) {
-  animation-delay: 330ms;
-}
-
-@keyframes riseIn {
-  from {
-    opacity: 0;
-    transform: translateY(34px) scale(0.985);
-    filter: blur(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
-  }
 }
 
 @keyframes scrollPulse {

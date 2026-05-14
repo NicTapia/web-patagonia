@@ -1,3 +1,4 @@
+import { motion, useReducedMotion } from 'framer-motion'
 import './App.css'
 
 const contactLinks = {
@@ -84,11 +85,61 @@ const categories = [
   },
 ]
 
+const transition = { duration: 0.78, ease: [0.22, 1, 0.36, 1] }
+
+function motionProps(shouldReduceMotion, delay = 0, amount = 0.22) {
+  if (shouldReduceMotion) {
+    return { initial: false, whileInView: undefined }
+  }
+
+  return {
+    initial: { opacity: 0, y: 30 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount },
+    transition: { ...transition, delay },
+  }
+}
+
+function heroProps(shouldReduceMotion, delay = 0) {
+  if (shouldReduceMotion) {
+    return { initial: false, animate: undefined }
+  }
+
+  return {
+    initial: { opacity: 0, y: 34 },
+    animate: { opacity: 1, y: 0 },
+    transition: { ...transition, delay },
+  }
+}
+
+function hoverLift(shouldReduceMotion, distance = -6) {
+  if (shouldReduceMotion) {
+    return {}
+  }
+
+  return {
+    whileHover: {
+      y: distance,
+      transition: { duration: 0.26, ease: [0.2, 0.7, 0.2, 1] },
+    },
+  }
+}
+
 function App() {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
     <main className="site-shell">
-      <section className="hero-section" id="inicio">
-        <nav className="topbar" aria-label="Navegación principal">
+      <a className="skip-link" href="#contenido">
+        Saltar al contenido
+      </a>
+
+      <section className="hero-section" id="inicio" aria-labelledby="hero-title">
+        <motion.nav
+          className="topbar"
+          aria-label="Navegación principal"
+          {...heroProps(shouldReduceMotion)}
+        >
           <a className="brand" href="#inicio" aria-label="Ir al inicio">
             Arte Patagonia
           </a>
@@ -97,12 +148,12 @@ function App() {
             <a href="#categorias">Categorías</a>
             <a href="#contacto">Contacto</a>
           </div>
-        </nav>
+        </motion.nav>
 
         <div className="hero-layout">
-          <div className="hero-content reveal">
+          <motion.div className="hero-content" {...heroProps(shouldReduceMotion, 0.12)}>
             <p className="eyebrow">Arte hecho a mano en el sur de Chile</p>
-            <h1>La Patagonia convertida en piezas únicas</h1>
+            <h1 id="hero-title">La Patagonia convertida en piezas únicas</h1>
             <p className="hero-copy">
               Aves nativas, paisajes australes y objetos cotidianos pintados a mano
               con una mirada íntima, natural y profundamente sureña.
@@ -115,34 +166,48 @@ function App() {
                 Encargar una pieza
               </a>
             </div>
-          </div>
+          </motion.div>
 
-          <aside className="hero-art-card reveal" aria-label="Detalle del portafolio">
+          <motion.aside
+            className="hero-art-card"
+            aria-label="Detalle del portafolio"
+            {...heroProps(shouldReduceMotion, 0.28)}
+          >
             <img
               src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=760&q=85"
               alt="Paisaje patagónico de montañas y agua"
+              fetchPriority="high"
             />
             <div>
               <span>Catálogo visual</span>
               <p>Aves, utensilios, adornos y encargos personalizados.</p>
             </div>
-          </aside>
+          </motion.aside>
 
-          <div className="hero-signature reveal" aria-label="Sello artístico">
+          <motion.div
+            className="hero-signature"
+            aria-label="Sello artístico"
+            {...heroProps(shouldReduceMotion, 0.42)}
+          >
             <span>Puerto, bosque y cordillera</span>
-            <span>pintura sobre madera y objetos</span>
-          </div>
+            <span>Pintura sobre madera y objetos</span>
+          </motion.div>
         </div>
 
-        <a className="scroll-cue" href="#inspiracion" aria-label="Ir a la siguiente sección">
+        <a className="scroll-cue" href="#contenido" aria-label="Ir a la siguiente sección">
           Explorar
         </a>
       </section>
 
-      <section className="section intro-section reveal" id="inspiracion">
+      <motion.section
+        className="section intro-section"
+        id="contenido"
+        aria-labelledby="inspiracion-title"
+        {...motionProps(shouldReduceMotion)}
+      >
         <div>
           <p className="eyebrow">Inspiración austral</p>
-          <h2>Un oficio lento, nacido entre bosque y viento</h2>
+          <h2 id="inspiracion-title">Un oficio lento, nacido entre bosque y viento</h2>
         </div>
         <div className="intro-copy">
           <p>
@@ -161,18 +226,20 @@ function App() {
             <span>Paisaje austral</span>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section className="section gallery-section" id="galeria">
-        <div className="section-heading reveal">
+      <section className="section gallery-section" id="galeria" aria-labelledby="galeria-title">
+        <motion.div className="section-heading" {...motionProps(shouldReduceMotion)}>
           <p className="eyebrow">Portafolio visual</p>
-          <h2>Piezas de muestra con carácter de sur</h2>
-        </div>
+          <h2 id="galeria-title">Piezas de muestra con carácter de sur</h2>
+        </motion.div>
         <div className="gallery-grid">
-          {galleryItems.map((item) => (
-            <article
-              className={`gallery-card reveal${item.featured ? ' featured' : ''}`}
+          {galleryItems.map((item, index) => (
+            <motion.article
+              className={`gallery-card${item.featured ? ' featured' : ''}`}
               key={item.title}
+              {...motionProps(shouldReduceMotion, index * 0.055, 0.16)}
+              {...hoverLift(shouldReduceMotion, -8)}
             >
               <div className="image-wrap">
                 <img src={item.image} alt={item.title} loading="lazy" />
@@ -182,28 +249,42 @@ function App() {
                 <h3>{item.title}</h3>
                 <p>{item.description}</p>
               </div>
-            </article>
+            </motion.article>
           ))}
         </div>
       </section>
 
-      <section className="section categories-section" id="categorias">
-        <div className="section-heading reveal">
+      <section
+        className="section categories-section"
+        id="categorias"
+        aria-labelledby="categorias-title"
+      >
+        <motion.div className="section-heading" {...motionProps(shouldReduceMotion)}>
           <p className="eyebrow">Catálogo artístico</p>
-          <h2>Categorías de trabajo</h2>
-        </div>
+          <h2 id="categorias-title">Categorías de trabajo</h2>
+        </motion.div>
         <div className="category-grid">
           {categories.map((category, index) => (
-            <article className="category-card reveal" key={category.name}>
+            <motion.article
+              className="category-card"
+              key={category.name}
+              {...motionProps(shouldReduceMotion, index * 0.055, 0.2)}
+              {...hoverLift(shouldReduceMotion, -6)}
+            >
               <span className="category-number">{String(index + 1).padStart(2, '0')}</span>
               <h3>{category.name}</h3>
               <p>{category.detail}</p>
-            </article>
+            </motion.article>
           ))}
         </div>
       </section>
 
-      <section className="custom-section reveal" id="personalizados">
+      <motion.section
+        className="custom-section"
+        id="personalizados"
+        aria-labelledby="personalizados-title"
+        {...motionProps(shouldReduceMotion, 0, 0.22)}
+      >
         <div className="custom-media">
           <img
             src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=85"
@@ -213,7 +294,7 @@ function App() {
         </div>
         <div className="custom-content">
           <p className="eyebrow">Encargos especiales</p>
-          <h2>Una pieza creada desde tu idea</h2>
+          <h2 id="personalizados-title">Una pieza creada desde tu idea</h2>
           <p>
             Un encargo puede partir desde una fotografía, un ave favorita, un paisaje
             familiar o una combinación de colores. La idea es construir una pieza con
@@ -225,17 +306,17 @@ function App() {
             <span>Pintura</span>
             <span>Entrega</span>
           </div>
-          <a className="button primary" href="#contacto">
+          <a className="button primary dark-text" href="#contacto">
             Cotizar personalizado
           </a>
         </div>
-      </section>
+      </motion.section>
 
-      <section className="section contact-section" id="contacto">
-        <div className="contact-panel reveal">
+      <section className="section contact-section" id="contacto" aria-labelledby="contacto-title">
+        <motion.div className="contact-panel" {...motionProps(shouldReduceMotion, 0, 0.24)}>
           <div className="contact-copy">
             <p className="eyebrow">Contacto directo</p>
-            <h2>Hablemos de la próxima pieza</h2>
+            <h2 id="contacto-title">Hablemos de la próxima pieza</h2>
             <p>
               Esta web funciona como portafolio y catálogo artístico. Para consultar
               disponibilidad, pedir una obra personalizada o conversar una idea, escribe
@@ -245,12 +326,13 @@ function App() {
           <div className="contact-card">
             <span>Respuesta directa</span>
             <p>Cuéntame qué objeto, ave o paisaje tienes en mente.</p>
-            <div className="contact-actions">
+            <div className="contact-actions" aria-label="Canales de contacto">
               <a
-                className="button primary"
+                className="button primary dark-text"
                 href={contactLinks.instagram}
                 target="_blank"
                 rel="noreferrer"
+                aria-label="Abrir Instagram en una nueva pestaña"
               >
                 Instagram
               </a>
@@ -259,6 +341,7 @@ function App() {
                 href={contactLinks.whatsapp}
                 target="_blank"
                 rel="noreferrer"
+                aria-label="Escribir por WhatsApp"
               >
                 WhatsApp
               </a>
@@ -267,7 +350,7 @@ function App() {
               </a>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       <footer className="footer">

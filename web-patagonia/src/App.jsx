@@ -34,6 +34,7 @@ const themes = {
 const galleryItems = [
   {
     src: '/images/taza-chucao.jpg',
+    cutoutSrc: '/images/taza-chucao.png',
     title: 'Taza Chucao',
     category: 'Taza pintada',
     bird: 'Chucao',
@@ -43,6 +44,7 @@ const galleryItems = [
   },
   {
     src: '/images/taza-sietecolores.jpg',
+    cutoutSrc: '/images/taza-sietecolores.png',
     title: 'Taza Sietecolores',
     category: 'Ave colorida',
     bird: 'Sietecolores',
@@ -52,6 +54,7 @@ const galleryItems = [
   },
   {
     src: '/images/termo-aguila.jpg',
+    cutoutSrc: '/images/termo-aguila.png',
     title: 'Termo Águila',
     category: 'Termo intervenido',
     bird: 'Águila',
@@ -61,6 +64,7 @@ const galleryItems = [
   },
   {
     src: '/images/tetera-gallo.jpg',
+    cutoutSrc: '/images/tetera-gallo.png',
     title: 'Tetera Gallo',
     category: 'Objeto decorativo',
     bird: 'Gallo',
@@ -117,6 +121,9 @@ const processSteps = [
 ]
 
 const personalizedOptions = ['Tazas', 'Teteras', 'Termos', 'Vajilla', 'Adornos', 'Utensilios']
+
+// Los PNG recortados viven en public/images; usa false si necesitas volver al JPG original.
+const useCutout = true
 
 const transition = { duration: 0.72, ease: [0.22, 1, 0.36, 1] }
 
@@ -279,180 +286,220 @@ function App() {
         </a>
       </section>
 
-      <section className="story-section" id="contenido" aria-labelledby="oficio-title">
-        <motion.div className="story-media" {...motionProps(shouldReduceMotion)}>
-          <img src="/images/taza-chucao.jpg" alt="Taza pintada a mano con chucao." />
-          <div className="story-mini-card">
-            <span>Hecho a mano</span>
-            <p>Vajilla, utensilios y objetos decorativos con aves pintadas una a una.</p>
-          </div>
-        </motion.div>
-        <motion.div className="story-copy" {...motionProps(shouldReduceMotion, 0.08)}>
-          <p className="eyebrow">Un oficio nacido entre bosques, aves y lluvia</p>
-          <h2 id="oficio-title">Piezas que llevan el sur a la mesa cotidiana</h2>
-          <p>
-            Cada obra parte de una observación: el color de un ave entre ramas, el brillo
-            del lago después de la lluvia, una tarde de cocina tibia o el silencio vegetal
-            del bosque. Luego esa atmósfera se transforma en pintura sobre tazas, teteras,
-            termos, vajilla y utensilios.
-          </p>
-          <p>
-            No son objetos producidos en serie. Cada pieza conversa con su soporte, con la
-            historia del encargo y con una manera muy sureña de mirar: pausada, sensible y
-            atenta a los detalles pequeños.
-          </p>
-          <div className="story-notes" aria-label="Inspiraciones del oficio">
-            <span>Bosque húmedo</span>
-            <span>Aves del sur</span>
-            <span>Lago y cordillera</span>
-            <span>Vida de hogar</span>
-          </div>
-        </motion.div>
-      </section>
+      <div className="page-atmosphere">
+        <section className="story-section" id="contenido" aria-labelledby="oficio-title">
+          <motion.div className="story-media" {...motionProps(shouldReduceMotion)}>
+            <img src="/images/taza-chucao.jpg" alt="Taza pintada a mano con chucao." />
+            <div className="story-mini-card">
+              <span>Hecho a mano</span>
+              <p>Vajilla, utensilios y objetos decorativos con aves pintadas una a una.</p>
+            </div>
+          </motion.div>
+          <motion.div className="story-copy" {...motionProps(shouldReduceMotion, 0.08)}>
+            <p className="eyebrow">Un oficio nacido entre bosques, aves y lluvia</p>
+            <h2 id="oficio-title">Piezas que llevan el sur a la mesa cotidiana</h2>
+            <p>
+              Cada obra parte de una observación: el color de un ave entre ramas, el brillo
+              del lago después de la lluvia, una tarde de cocina tibia o el silencio vegetal
+              del bosque. Luego esa atmósfera se transforma en pintura sobre tazas, teteras,
+              termos, vajilla y utensilios.
+            </p>
+            <p>
+              No son objetos producidos en serie. Cada pieza conversa con su soporte, con la
+              historia del encargo y con una manera muy sureña de mirar: pausada, sensible y
+              atenta a los detalles pequeños.
+            </p>
+            <div className="story-notes" aria-label="Inspiraciones del oficio">
+              <span>Bosque húmedo</span>
+              <span>Aves del sur</span>
+              <span>Lago y cordillera</span>
+              <span>Vida de hogar</span>
+            </div>
+          </motion.div>
+        </section>
 
-      <section className="birds-section" id="aves" aria-labelledby="aves-title">
-        <motion.div className="section-heading centered" {...motionProps(shouldReduceMotion)}>
-          <p className="eyebrow">Aves que habitan la vajilla</p>
-          <h2 id="aves-title">Pequeñas presencias que vuelven única cada pieza</h2>
-        </motion.div>
-        <div className="bird-grid">
-          {birdStories.map((bird, index) => (
-            <motion.article
-              className="bird-card"
-              key={bird.name}
-              {...motionProps(shouldReduceMotion, index * 0.055, 0.16)}
-              {...hoverLift(shouldReduceMotion, -7)}
-            >
-              <img src={bird.image} alt={bird.alt} loading="lazy" />
-              <div>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <h3>{bird.name}</h3>
-                <p>{bird.text}</p>
-              </div>
-            </motion.article>
-          ))}
-        </div>
-      </section>
-
-      <section className="process-section" aria-labelledby="proceso-title">
-        <motion.div className="section-heading" {...motionProps(shouldReduceMotion)}>
-          <p className="eyebrow">Del paisaje a la pieza</p>
-          <h2 id="proceso-title">Un proceso lento, visual y cercano</h2>
-        </motion.div>
-        <div className="process-grid">
-          {processSteps.map((step, index) => (
-            <motion.article
-              className="process-card"
-              key={step.title}
-              {...motionProps(shouldReduceMotion, index * 0.055, 0.18)}
-            >
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <h3>{step.title}</h3>
-              <p>{step.text}</p>
-            </motion.article>
-          ))}
-        </div>
-      </section>
-
-      <section className="gallery-section" id="galeria" aria-labelledby="galeria-title">
-        <motion.div className="section-heading" {...motionProps(shouldReduceMotion)}>
-          <p className="eyebrow">Galería editorial</p>
-          <h2 id="galeria-title">Objetos reales pintados con aves y escenas del sur</h2>
-        </motion.div>
-        <div className="editorial-gallery">
-          {galleryItems.map((item, index) => (
-            <motion.article
-              className={`gallery-card gallery-card-${index + 1}`}
-              key={item.title}
-              {...motionProps(shouldReduceMotion, index * 0.055, 0.14)}
-              {...hoverLift(shouldReduceMotion, index === 0 ? -5 : -8)}
-            >
-              <div className="image-wrap">
-                <img src={item.src} alt={item.alt} loading="lazy" />
-              </div>
-              <div className="card-content">
-                <span>{item.category}</span>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-              </div>
-            </motion.article>
-          ))}
-        </div>
-      </section>
-
-      <motion.section
-        className="custom-section"
-        id="personalizados"
-        aria-labelledby="personalizados-title"
-        {...motionProps(shouldReduceMotion, 0, 0.22)}
-      >
-        <div className="custom-content">
-          <p className="eyebrow">Encargos personalizados</p>
-          <h2 id="personalizados-title">Una conversación entre tu idea y la mano de la artista</h2>
-          <p>
-            Puedes pedir una pieza para regalar, para acompañar tu cocina o para transformar
-            un objeto querido en algo profundamente personal. La elección del ave, el soporte,
-            los colores y los detalles se conversa directamente con la artista.
-          </p>
-          <p className="important-note">
-            Cada pieza se conversa directamente con la artista para definir ave, objeto,
-            colores y detalles.
-          </p>
-          <div className="object-list" aria-label="Objetos disponibles para personalizar">
-            {personalizedOptions.map((option) => (
-              <span key={option}>{option}</span>
+        <section className="showcase-section" aria-labelledby="destacadas-title">
+          <motion.div className="section-heading centered" {...motionProps(shouldReduceMotion)}>
+            <p className="eyebrow">Piezas destacadas</p>
+            <h2 id="destacadas-title">Objetos protagonistas, como catálogo de taller</h2>
+          </motion.div>
+          <div className="showcase-list">
+            {galleryItems.map((item, index) => (
+              <motion.article
+                className="showcase-piece"
+                key={item.title}
+                {...motionProps(shouldReduceMotion, index * 0.055, 0.16)}
+              >
+                <div className="showcase-object" data-cutout-src={item.cutoutSrc}>
+                  <img
+                    src={useCutout ? item.cutoutSrc : item.src}
+                    alt={item.alt}
+                    loading="lazy"
+                  />
+                </div>
+                <div className="showcase-copy">
+                  <span>{item.category}</span>
+                  <h3>{item.title}</h3>
+                  <dl>
+                    <div>
+                      <dt>Ave</dt>
+                      <dd>{item.bird}</dd>
+                    </div>
+                  </dl>
+                  <p>{item.description}</p>
+                  <a className="button primary dark-text" href="#contacto">
+                    Consultar pieza
+                  </a>
+                </div>
+              </motion.article>
             ))}
           </div>
-          <a className="button primary dark-text" href="#contacto">
-            Conversar un encargo
-          </a>
-        </div>
-        <div className="custom-collage" aria-label="Ejemplos de piezas personalizadas">
-          <img src="/images/termo-aguila.jpg" alt="Termo pintado con águila y paisaje." />
-          <img src="/images/tetera-gallo.jpg" alt="Tetera pintada con gallo." />
-        </div>
-      </motion.section>
+        </section>
 
-      <section className="contact-section" id="contacto" aria-labelledby="contacto-title">
-        <motion.div className="contact-panel" {...motionProps(shouldReduceMotion, 0, 0.24)}>
-          <div className="contact-copy">
-            <p className="eyebrow">Contacto directo</p>
-            <h2 id="contacto-title">
-              ¿Tienes un ave favorita o una pieza especial que te gustaría transformar?
-            </h2>
+        <section className="birds-section" id="aves" aria-labelledby="aves-title">
+          <motion.div className="section-heading centered" {...motionProps(shouldReduceMotion)}>
+            <p className="eyebrow">Aves que habitan la vajilla</p>
+            <h2 id="aves-title">Pequeñas presencias que vuelven única cada pieza</h2>
+          </motion.div>
+          <div className="bird-grid">
+            {birdStories.map((bird, index) => (
+              <motion.article
+                className="bird-card"
+                key={bird.name}
+                {...motionProps(shouldReduceMotion, index * 0.055, 0.16)}
+                {...hoverLift(shouldReduceMotion, -7)}
+              >
+                <img src={bird.image} alt={bird.alt} loading="lazy" />
+                <div>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <h3>{bird.name}</h3>
+                  <p>{bird.text}</p>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </section>
+
+        <section className="process-section" aria-labelledby="proceso-title">
+          <motion.div className="section-heading" {...motionProps(shouldReduceMotion)}>
+            <p className="eyebrow">Del paisaje a la pieza</p>
+            <h2 id="proceso-title">Un proceso lento, visual y cercano</h2>
+          </motion.div>
+          <div className="process-grid">
+            {processSteps.map((step, index) => (
+              <motion.article
+                className="process-card"
+                key={step.title}
+                {...motionProps(shouldReduceMotion, index * 0.055, 0.18)}
+              >
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </motion.article>
+            ))}
+          </div>
+        </section>
+
+        <section className="gallery-section" id="galeria" aria-labelledby="galeria-title">
+          <motion.div className="section-heading" {...motionProps(shouldReduceMotion)}>
+            <p className="eyebrow">Archivo visual</p>
+            <h2 id="galeria-title">Detalles reales de pintura, color y soporte</h2>
+          </motion.div>
+          <div className="editorial-gallery">
+            {galleryItems.map((item, index) => (
+              <motion.article
+                className={`gallery-card gallery-card-${index + 1}`}
+                key={item.title}
+                {...motionProps(shouldReduceMotion, index * 0.055, 0.14)}
+                {...hoverLift(shouldReduceMotion, index === 0 ? -5 : -8)}
+              >
+                <div className="image-wrap">
+                  <img src={item.src} alt={item.alt} loading="lazy" />
+                </div>
+                <div className="card-content">
+                  <span>{item.category}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.description}</p>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </section>
+
+        <motion.section
+          className="custom-section"
+          id="personalizados"
+          aria-labelledby="personalizados-title"
+          {...motionProps(shouldReduceMotion, 0, 0.22)}
+        >
+          <div className="custom-content">
+            <p className="eyebrow">Encargos personalizados</p>
+            <h2 id="personalizados-title">Una conversación entre tu idea y la mano de la artista</h2>
             <p>
-              Escríbenos para consultar disponibilidad, encargos especiales o ideas para
-              pintar sobre tu objeto favorito. La página funciona como portafolio artístico:
-              sin carrito, sin pagos y sin precios publicados.
+              Puedes pedir una pieza para regalar, para acompañar tu cocina o para transformar
+              un objeto querido en algo profundamente personal. La elección del ave, el soporte,
+              los colores y los detalles se conversa directamente con la artista.
             </p>
-          </div>
-          <div className="contact-card">
-            <span>Conversemos tu pieza</span>
-            <p>Comparte la idea, el objeto y el ave que imaginas. Desde ahí empieza el encargo.</p>
-            <div className="contact-actions" aria-label="Canales de contacto">
-              <a
-                className="button whatsapp"
-                href={contactLinks.whatsapp}
-                target="_blank"
-                rel="noreferrer"
-              >
-                WhatsApp
-              </a>
-              <a
-                className="button primary dark-text"
-                href={contactLinks.instagram}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Instagram
-              </a>
-              <a className="button secondary" href={contactLinks.email}>
-                Correo
-              </a>
+            <p className="important-note">
+              Cada pieza se conversa directamente con la artista para definir ave, objeto,
+              colores y detalles.
+            </p>
+            <div className="object-list" aria-label="Objetos disponibles para personalizar">
+              {personalizedOptions.map((option) => (
+                <span key={option}>{option}</span>
+              ))}
             </div>
+            <a className="button primary dark-text" href="#contacto">
+              Conversar un encargo
+            </a>
           </div>
-        </motion.div>
-      </section>
+          <div className="custom-collage" aria-label="Ejemplos de piezas personalizadas">
+            <img src="/images/termo-aguila.jpg" alt="Termo pintado con águila y paisaje." />
+            <img src="/images/tetera-gallo.jpg" alt="Tetera pintada con gallo." />
+          </div>
+        </motion.section>
+
+        <section className="contact-section" id="contacto" aria-labelledby="contacto-title">
+          <motion.div className="contact-panel" {...motionProps(shouldReduceMotion, 0, 0.24)}>
+            <div className="contact-copy">
+              <p className="eyebrow">Contacto directo</p>
+              <h2 id="contacto-title">
+                ¿Tienes un ave favorita o una pieza especial que te gustaría transformar?
+              </h2>
+              <p>
+                Escríbenos para consultar disponibilidad, encargos especiales o ideas para
+                pintar sobre tu objeto favorito. La página funciona como portafolio artístico:
+                sin carrito, sin pagos y sin precios publicados.
+              </p>
+            </div>
+            <div className="contact-card">
+              <span>Conversemos tu pieza</span>
+              <p>Comparte la idea, el objeto y el ave que imaginas. Desde ahí empieza el encargo.</p>
+              <div className="contact-actions" aria-label="Canales de contacto">
+                <a
+                  className="button whatsapp"
+                  href={contactLinks.whatsapp}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  WhatsApp
+                </a>
+                <a
+                  className="button primary dark-text"
+                  href={contactLinks.instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Instagram
+                </a>
+                <a className="button secondary" href={contactLinks.email}>
+                  Correo
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        </section>
+      </div>
 
       <footer className="footer">
         <div>

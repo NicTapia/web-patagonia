@@ -1,99 +1,132 @@
+import { useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import './App.css'
 
 const contactLinks = {
-  instagram: 'https://www.instagram.com/',
-  whatsapp: 'https://wa.me/56912345678',
-  email: 'mailto:hola@artepatagonia.cl',
+  whatsapp: 'https://wa.me/569XXXXXXXX',
+  instagram: 'https://instagram.com/USUARIO',
+  email: 'mailto:correo@ejemplo.cl',
 }
 
-// Reemplaza estas URLs por archivos locales cuando tengas fotos reales:
-// /images/nombre-del-archivo.jpg
+const themes = {
+  rain: {
+    label: 'Lluvia del sur',
+    nextLabel: 'Día soleado',
+    video: '/videos/video-lluvia.mp4',
+    eyebrow: 'Refugio artístico entre bosque y lluvia',
+    title: 'Pintando Aves Patagonia',
+    subtitle: 'Arte sobre vajilla inspirado en aves, bosques y paisajes del sur de Chile.',
+    poem: 'Entre lluvia, bosque y calor de hogar, cada ave encuentra su lugar.',
+    notes: ['Casa tibia', 'Vidrio empañado', 'Bosque mojado'],
+  },
+  sun: {
+    label: 'Día soleado',
+    nextLabel: 'Lluvia del sur',
+    video: '/videos/paisaje-sol.mp4',
+    eyebrow: 'Color, lago y vuelo en el sur de Chile',
+    title: 'Pintando Aves Patagonia',
+    subtitle: 'Arte sobre vajilla inspirado en aves, bosques y paisajes del sur de Chile.',
+    poem: 'Colores del sur, aves en vuelo y paisajes que iluminan cada pieza.',
+    notes: ['Luz de lago', 'Bosque abierto', 'Aves en calma'],
+  },
+}
+
 const galleryItems = [
   {
-    title: 'Loica sobre madera nativa',
-    type: 'Aves del sur',
+    src: '/images/taza-chucao.jpg',
+    title: 'Taza Chucao',
+    category: 'Taza pintada',
+    bird: 'Chucao',
     description:
-      'Rojo intenso, trazo fino y vetas visibles para una pieza que conserva el pulso del bosque.',
-    image:
-      'https://images.unsplash.com/photo-1555169062-013468b47731?auto=format&fit=crop&w=1100&q=85',
-    featured: true,
+      'Una taza que guarda el pulso del sotobosque: el chucao aparece entre ramas, tierra húmeda y calma sureña.',
+    alt: 'Taza pintada a mano con un ave chucao y detalles naturales.',
   },
   {
-    title: 'Tabla patagónica pintada',
-    type: 'Utensilios',
+    src: '/images/taza-sietecolores.jpg',
+    title: 'Taza Sietecolores',
+    category: 'Ave colorida',
+    bird: 'Sietecolores',
     description:
-      'Un objeto cotidiano transformado en una escena íntima de lago, madera y viento austral.',
-    image:
-      'https://images.unsplash.com/photo-1528712306091-ed0763094c98?auto=format&fit=crop&w=900&q=85',
+      'Color intenso sobre fondo profundo, como un destello pequeño junto a humedales y juncos del sur.',
+    alt: 'Taza negra pintada con un ave sietecolores de tonos vivos.',
   },
   {
-    title: 'Montañas y lenga',
-    type: 'Paisajes',
+    src: '/images/termo-aguila.jpg',
+    title: 'Termo Águila',
+    category: 'Termo intervenido',
+    bird: 'Águila',
     description:
-      'Capas de azul profundo, nieve suave y verdes apagados para una atmósfera de silencio.',
-    image:
-      'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=85',
+      'Una pieza de viaje con mirada amplia: ave, lago y horizonte para acompañar rutas y días al aire libre.',
+    alt: 'Termo pintado a mano con un águila y paisaje de lago.',
   },
   {
-    title: 'Adorno de temporada austral',
-    type: 'Objetos pintados',
+    src: '/images/tetera-gallo.jpg',
+    title: 'Tetera Gallo',
+    category: 'Objeto decorativo',
+    bird: 'Gallo',
     description:
-      'Detalles pequeños con acabado artesanal, pensados para regalar presencia y memoria.',
-    image:
-      'https://images.unsplash.com/photo-1513519245088-0e12902e35ca?auto=format&fit=crop&w=900&q=85',
-  },
-  {
-    title: 'Carpintero negro',
-    type: 'Aves',
-    description:
-      'Retrato de carácter fuerte, con contraste oscuro y acentos rojos inspirados en fauna nativa.',
-    image:
-      'https://images.unsplash.com/photo-1522926193341-e9ffd686c60f?auto=format&fit=crop&w=1100&q=85',
-    featured: true,
-  },
-  {
-    title: 'Encargo con paisaje familiar',
-    type: 'Personalizado',
-    description:
-      'Una composición hecha desde una historia propia: un lugar querido, un ave o una fecha.',
-    image:
-      'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&w=900&q=85',
+      'Presencia doméstica, color y carácter sobre una tetera negra pensada para vestir la mesa con oficio.',
+    alt: 'Tetera negra pintada a mano con un gallo colorido.',
   },
 ]
 
-const categories = [
+const birdStories = [
   {
-    name: 'Utensilios de cocina',
-    detail: 'Tablas, cucharas y bandejas intervenidas con escenas delicadas y sellado decorativo.',
+    name: 'Chucao',
+    image: '/images/taza-chucao.jpg',
+    alt: 'Detalle de taza pintada con chucao.',
+    text: 'Pequeño habitante del bosque húmedo, aparece como una señal íntima entre hojas, musgo y senderos.',
   },
   {
-    name: 'Adornos',
-    detail: 'Piezas pequeñas para sumar textura, calidez y un gesto de territorio al hogar.',
+    name: 'Sietecolores',
+    image: '/images/taza-sietecolores.jpg',
+    alt: 'Detalle de taza pintada con sietecolores.',
+    text: 'Un destello vivo y delicado; su plumaje lleva a la vajilla la sorpresa luminosa de los humedales.',
   },
   {
-    name: 'Aves',
-    detail: 'Loicas, chucaos, carpinteros y especies observadas en bosques del sur chileno.',
+    name: 'Águila',
+    image: '/images/termo-aguila.jpg',
+    alt: 'Detalle de termo pintado con águila y paisaje.',
+    text: 'Mirada alta, viento abierto y paisaje de lago: una presencia que habla de viaje y territorio.',
   },
   {
-    name: 'Paisajes',
-    detail: 'Montañas, lagos, lengas, nieve y cielos cambiantes traducidos a color y textura.',
-  },
-  {
-    name: 'Personalizados',
-    detail: 'Encargos con nombres, fechas, recuerdos, aves favoritas o lugares significativos.',
+    name: 'Gallo',
+    image: '/images/tetera-gallo.jpg',
+    alt: 'Detalle de tetera pintada con gallo.',
+    text: 'Cercano y expresivo, trae a la mesa la calidez del hogar, el color cotidiano y la memoria rural.',
   },
 ]
 
-const transition = { duration: 0.78, ease: [0.22, 1, 0.36, 1] }
+const processSteps = [
+  {
+    title: 'Inspiración',
+    text: 'Aves, bosques, lluvia, lagos y escenas del sur se observan antes de llegar al trazo.',
+  },
+  {
+    title: 'Elección',
+    text: 'Se define la pieza: taza, tetera, termo, vajilla, adorno o utensilio especial.',
+  },
+  {
+    title: 'Pintura',
+    text: 'Cada detalle se trabaja a mano, cuidando color, composición y carácter del ave.',
+  },
+  {
+    title: 'Hogar',
+    text: 'La pieza queda lista para acompañar una mesa, una cocina, una ruta o un regalo con sentido.',
+  },
+]
 
-function motionProps(shouldReduceMotion, delay = 0, amount = 0.22) {
+const personalizedOptions = ['Tazas', 'Teteras', 'Termos', 'Vajilla', 'Adornos', 'Utensilios']
+
+const transition = { duration: 0.72, ease: [0.22, 1, 0.36, 1] }
+
+function motionProps(shouldReduceMotion, delay = 0, amount = 0.18) {
   if (shouldReduceMotion) {
     return { initial: false, whileInView: undefined }
   }
 
   return {
-    initial: { opacity: 0, y: 30 },
+    initial: { opacity: 0, y: 28 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true, amount },
     transition: { ...transition, delay },
@@ -106,7 +139,7 @@ function heroProps(shouldReduceMotion, delay = 0) {
   }
 
   return {
-    initial: { opacity: 0, y: 34 },
+    initial: { opacity: 0, y: 30 },
     animate: { opacity: 1, y: 0 },
     transition: { ...transition, delay },
   }
@@ -120,77 +153,124 @@ function hoverLift(shouldReduceMotion, distance = -6) {
   return {
     whileHover: {
       y: distance,
-      transition: { duration: 0.26, ease: [0.2, 0.7, 0.2, 1] },
+      transition: { duration: 0.24, ease: [0.2, 0.7, 0.2, 1] },
     },
   }
 }
 
+function getStoredTheme() {
+  if (typeof window === 'undefined') {
+    return 'rain'
+  }
+
+  return window.localStorage.getItem('patagonia-theme') === 'sun' ? 'sun' : 'rain'
+}
+
 function App() {
   const shouldReduceMotion = useReducedMotion()
+  const [theme, setTheme] = useState(getStoredTheme)
+  const activeTheme = themes[theme]
+  const featuredItem = theme === 'rain' ? galleryItems[0] : galleryItems[2]
+
+  useEffect(() => {
+    window.localStorage.setItem('patagonia-theme', theme)
+  }, [theme])
+
+  function toggleTheme() {
+    setTheme((currentTheme) => (currentTheme === 'rain' ? 'sun' : 'rain'))
+  }
 
   return (
-    <main className="site-shell">
+    <main className={`site-shell theme-${theme}`}>
       <a className="skip-link" href="#contenido">
         Saltar al contenido
       </a>
 
       <section className="hero-section" id="inicio" aria-labelledby="hero-title">
-        <motion.nav
+        <video
+          key={activeTheme.video}
+          className="hero-video"
+          src={activeTheme.video}
+          autoPlay={!shouldReduceMotion}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        />
+        <div className="hero-overlay" aria-hidden="true" />
+        <div className="hero-atmosphere" aria-hidden="true" />
+
+        <motion.header
           className="topbar"
           aria-label="Navegación principal"
           {...heroProps(shouldReduceMotion)}
         >
           <a className="brand" href="#inicio" aria-label="Ir al inicio">
-            Arte Patagonia
+            <img src="/images/logo-real.png" alt="" />
+            <span>Pintando Aves Patagonia</span>
           </a>
-          <div className="nav-links">
+          <nav className="nav-links" aria-label="Secciones">
+            <a href="#inicio">Inicio</a>
+            <a href="#contenido">Arte</a>
+            <a href="#aves">Aves</a>
             <a href="#galeria">Galería</a>
-            <a href="#categorias">Categorías</a>
+            <a href="#personalizados">Personalizados</a>
             <a href="#contacto">Contacto</a>
-          </div>
-        </motion.nav>
+          </nav>
+          <button
+            className="theme-toggle"
+            type="button"
+            onClick={toggleTheme}
+            aria-pressed={theme === 'sun'}
+            aria-label={`Cambiar a ${activeTheme.nextLabel}`}
+          >
+            <span>{activeTheme.label}</span>
+            <strong>{activeTheme.nextLabel}</strong>
+          </button>
+        </motion.header>
 
         <div className="hero-layout">
-          <motion.div className="hero-content" {...heroProps(shouldReduceMotion, 0.12)}>
-            <p className="eyebrow">Arte hecho a mano en el sur de Chile</p>
-            <h1 id="hero-title">La Patagonia convertida en piezas únicas</h1>
-            <p className="hero-copy">
-              Aves nativas, paisajes australes y objetos cotidianos pintados a mano
-              con una mirada íntima, natural y profundamente sureña.
-            </p>
+          <motion.div className="hero-content" {...heroProps(shouldReduceMotion, 0.1)}>
+            <p className="eyebrow">{activeTheme.eyebrow}</p>
+            <h1 id="hero-title">{activeTheme.title}</h1>
+            <p className="hero-copy">{activeTheme.subtitle}</p>
+            <p className="hero-poem">{activeTheme.poem}</p>
             <div className="hero-actions">
               <a className="button primary" href="#galeria">
-                Ver portafolio
+                Ver galería
               </a>
               <a className="button secondary" href="#contacto">
-                Encargar una pieza
+                Contactar
               </a>
             </div>
           </motion.div>
 
           <motion.aside
-            className="hero-art-card"
-            aria-label="Detalle del portafolio"
-            {...heroProps(shouldReduceMotion, 0.28)}
+            className="hero-brand-card"
+            aria-label="Sello de marca y pieza destacada"
+            {...heroProps(shouldReduceMotion, 0.24)}
           >
-            <img
-              src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=760&q=85"
-              alt="Paisaje patagónico de montañas y agua"
-              fetchPriority="high"
-            />
-            <div>
-              <span>Catálogo visual</span>
-              <p>Aves, utensilios, adornos y encargos personalizados.</p>
+            <div className="brand-logo-panel">
+              <img src="/images/logo-real.png" alt="Logo Pintando Aves Patagonia" />
+            </div>
+            <div className="hero-feature">
+              <img src={featuredItem.src} alt={featuredItem.alt} />
+              <div>
+                <span>{featuredItem.category}</span>
+                <p>{featuredItem.title}</p>
+              </div>
             </div>
           </motion.aside>
 
           <motion.div
             className="hero-signature"
-            aria-label="Sello artístico"
-            {...heroProps(shouldReduceMotion, 0.42)}
+            aria-label="Detalles de la experiencia"
+            {...heroProps(shouldReduceMotion, 0.34)}
           >
-            <span>Puerto, bosque y cordillera</span>
-            <span>Pintura sobre madera y objetos</span>
+            {activeTheme.notes.map((detail) => (
+              <span key={detail}>{detail}</span>
+            ))}
           </motion.div>
         </div>
 
@@ -199,81 +279,102 @@ function App() {
         </a>
       </section>
 
-      <motion.section
-        className="section intro-section"
-        id="contenido"
-        aria-labelledby="inspiracion-title"
-        {...motionProps(shouldReduceMotion)}
-      >
-        <div>
-          <p className="eyebrow">Inspiración austral</p>
-          <h2 id="inspiracion-title">Un oficio lento, nacido entre bosque y viento</h2>
-        </div>
-        <div className="intro-copy">
-          <p>
-            Cada obra parte de una escena del sur: el vuelo breve de una loica, el
-            silencio de una montaña nevada, el brillo frío de un lago o la textura de
-            una tabla que todavía guarda memoria de madera.
-          </p>
-          <p>
-            El resultado es un portafolio de piezas cálidas y contemplativas, creadas
-            para decorar, regalar con sentido o convertir un recuerdo personal en una
-            obra hecha a medida.
-          </p>
-          <div className="material-notes" aria-label="Materiales e inspiración">
-            <span>Madera</span>
-            <span>Aves nativas</span>
-            <span>Paisaje austral</span>
+      <section className="story-section" id="contenido" aria-labelledby="oficio-title">
+        <motion.div className="story-media" {...motionProps(shouldReduceMotion)}>
+          <img src="/images/taza-chucao.jpg" alt="Taza pintada a mano con chucao." />
+          <div className="story-mini-card">
+            <span>Hecho a mano</span>
+            <p>Vajilla, utensilios y objetos decorativos con aves pintadas una a una.</p>
           </div>
-        </div>
-      </motion.section>
-
-      <section className="section gallery-section" id="galeria" aria-labelledby="galeria-title">
-        <motion.div className="section-heading" {...motionProps(shouldReduceMotion)}>
-          <p className="eyebrow">Portafolio visual</p>
-          <h2 id="galeria-title">Piezas de muestra con carácter de sur</h2>
         </motion.div>
-        <div className="gallery-grid">
-          {galleryItems.map((item, index) => (
+        <motion.div className="story-copy" {...motionProps(shouldReduceMotion, 0.08)}>
+          <p className="eyebrow">Un oficio nacido entre bosques, aves y lluvia</p>
+          <h2 id="oficio-title">Piezas que llevan el sur a la mesa cotidiana</h2>
+          <p>
+            Cada obra parte de una observación: el color de un ave entre ramas, el brillo
+            del lago después de la lluvia, una tarde de cocina tibia o el silencio vegetal
+            del bosque. Luego esa atmósfera se transforma en pintura sobre tazas, teteras,
+            termos, vajilla y utensilios.
+          </p>
+          <p>
+            No son objetos producidos en serie. Cada pieza conversa con su soporte, con la
+            historia del encargo y con una manera muy sureña de mirar: pausada, sensible y
+            atenta a los detalles pequeños.
+          </p>
+          <div className="story-notes" aria-label="Inspiraciones del oficio">
+            <span>Bosque húmedo</span>
+            <span>Aves del sur</span>
+            <span>Lago y cordillera</span>
+            <span>Vida de hogar</span>
+          </div>
+        </motion.div>
+      </section>
+
+      <section className="birds-section" id="aves" aria-labelledby="aves-title">
+        <motion.div className="section-heading centered" {...motionProps(shouldReduceMotion)}>
+          <p className="eyebrow">Aves que habitan la vajilla</p>
+          <h2 id="aves-title">Pequeñas presencias que vuelven única cada pieza</h2>
+        </motion.div>
+        <div className="bird-grid">
+          {birdStories.map((bird, index) => (
             <motion.article
-              className={`gallery-card${item.featured ? ' featured' : ''}`}
-              key={item.title}
+              className="bird-card"
+              key={bird.name}
               {...motionProps(shouldReduceMotion, index * 0.055, 0.16)}
-              {...hoverLift(shouldReduceMotion, -8)}
+              {...hoverLift(shouldReduceMotion, -7)}
             >
-              <div className="image-wrap">
-                <img src={item.image} alt={item.title} loading="lazy" />
-              </div>
-              <div className="card-content">
-                <span>{item.type}</span>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
+              <img src={bird.image} alt={bird.alt} loading="lazy" />
+              <div>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <h3>{bird.name}</h3>
+                <p>{bird.text}</p>
               </div>
             </motion.article>
           ))}
         </div>
       </section>
 
-      <section
-        className="section categories-section"
-        id="categorias"
-        aria-labelledby="categorias-title"
-      >
+      <section className="process-section" aria-labelledby="proceso-title">
         <motion.div className="section-heading" {...motionProps(shouldReduceMotion)}>
-          <p className="eyebrow">Catálogo artístico</p>
-          <h2 id="categorias-title">Categorías de trabajo</h2>
+          <p className="eyebrow">Del paisaje a la pieza</p>
+          <h2 id="proceso-title">Un proceso lento, visual y cercano</h2>
         </motion.div>
-        <div className="category-grid">
-          {categories.map((category, index) => (
+        <div className="process-grid">
+          {processSteps.map((step, index) => (
             <motion.article
-              className="category-card"
-              key={category.name}
-              {...motionProps(shouldReduceMotion, index * 0.055, 0.2)}
-              {...hoverLift(shouldReduceMotion, -6)}
+              className="process-card"
+              key={step.title}
+              {...motionProps(shouldReduceMotion, index * 0.055, 0.18)}
             >
-              <span className="category-number">{String(index + 1).padStart(2, '0')}</span>
-              <h3>{category.name}</h3>
-              <p>{category.detail}</p>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </motion.article>
+          ))}
+        </div>
+      </section>
+
+      <section className="gallery-section" id="galeria" aria-labelledby="galeria-title">
+        <motion.div className="section-heading" {...motionProps(shouldReduceMotion)}>
+          <p className="eyebrow">Galería editorial</p>
+          <h2 id="galeria-title">Objetos reales pintados con aves y escenas del sur</h2>
+        </motion.div>
+        <div className="editorial-gallery">
+          {galleryItems.map((item, index) => (
+            <motion.article
+              className={`gallery-card gallery-card-${index + 1}`}
+              key={item.title}
+              {...motionProps(shouldReduceMotion, index * 0.055, 0.14)}
+              {...hoverLift(shouldReduceMotion, index === 0 ? -5 : -8)}
+            >
+              <div className="image-wrap">
+                <img src={item.src} alt={item.alt} loading="lazy" />
+              </div>
+              <div className="card-content">
+                <span>{item.category}</span>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
             </motion.article>
           ))}
         </div>
@@ -285,65 +386,65 @@ function App() {
         aria-labelledby="personalizados-title"
         {...motionProps(shouldReduceMotion, 0, 0.22)}
       >
-        <div className="custom-media">
-          <img
-            src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=85"
-            alt="Paisaje natural con bosque y agua"
-            loading="lazy"
-          />
-        </div>
         <div className="custom-content">
-          <p className="eyebrow">Encargos especiales</p>
-          <h2 id="personalizados-title">Una pieza creada desde tu idea</h2>
+          <p className="eyebrow">Encargos personalizados</p>
+          <h2 id="personalizados-title">Una conversación entre tu idea y la mano de la artista</h2>
           <p>
-            Un encargo puede partir desde una fotografía, un ave favorita, un paisaje
-            familiar o una combinación de colores. La idea es construir una pieza con
-            intención, cuidando el soporte, el tono y los detalles que la vuelven tuya.
+            Puedes pedir una pieza para regalar, para acompañar tu cocina o para transformar
+            un objeto querido en algo profundamente personal. La elección del ave, el soporte,
+            los colores y los detalles se conversa directamente con la artista.
           </p>
-          <div className="process-list" aria-label="Proceso de encargo">
-            <span>Idea</span>
-            <span>Boceto</span>
-            <span>Pintura</span>
-            <span>Entrega</span>
+          <p className="important-note">
+            Cada pieza se conversa directamente con la artista para definir ave, objeto,
+            colores y detalles.
+          </p>
+          <div className="object-list" aria-label="Objetos disponibles para personalizar">
+            {personalizedOptions.map((option) => (
+              <span key={option}>{option}</span>
+            ))}
           </div>
           <a className="button primary dark-text" href="#contacto">
-            Cotizar personalizado
+            Conversar un encargo
           </a>
+        </div>
+        <div className="custom-collage" aria-label="Ejemplos de piezas personalizadas">
+          <img src="/images/termo-aguila.jpg" alt="Termo pintado con águila y paisaje." />
+          <img src="/images/tetera-gallo.jpg" alt="Tetera pintada con gallo." />
         </div>
       </motion.section>
 
-      <section className="section contact-section" id="contacto" aria-labelledby="contacto-title">
+      <section className="contact-section" id="contacto" aria-labelledby="contacto-title">
         <motion.div className="contact-panel" {...motionProps(shouldReduceMotion, 0, 0.24)}>
           <div className="contact-copy">
             <p className="eyebrow">Contacto directo</p>
-            <h2 id="contacto-title">Hablemos de la próxima pieza</h2>
+            <h2 id="contacto-title">
+              ¿Tienes un ave favorita o una pieza especial que te gustaría transformar?
+            </h2>
             <p>
-              Esta web funciona como portafolio y catálogo artístico. Para consultar
-              disponibilidad, pedir una obra personalizada o conversar una idea, escribe
-              por el canal que te acomode.
+              Escríbenos para consultar disponibilidad, encargos especiales o ideas para
+              pintar sobre tu objeto favorito. La página funciona como portafolio artístico:
+              sin carrito, sin pagos y sin precios publicados.
             </p>
           </div>
           <div className="contact-card">
-            <span>Respuesta directa</span>
-            <p>Cuéntame qué objeto, ave o paisaje tienes en mente.</p>
+            <span>Conversemos tu pieza</span>
+            <p>Comparte la idea, el objeto y el ave que imaginas. Desde ahí empieza el encargo.</p>
             <div className="contact-actions" aria-label="Canales de contacto">
-              <a
-                className="button primary dark-text"
-                href={contactLinks.instagram}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Abrir Instagram en una nueva pestaña"
-              >
-                Instagram
-              </a>
               <a
                 className="button whatsapp"
                 href={contactLinks.whatsapp}
                 target="_blank"
                 rel="noreferrer"
-                aria-label="Escribir por WhatsApp"
               >
                 WhatsApp
+              </a>
+              <a
+                className="button primary dark-text"
+                href={contactLinks.instagram}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Instagram
               </a>
               <a className="button secondary" href={contactLinks.email}>
                 Correo
@@ -354,7 +455,19 @@ function App() {
       </section>
 
       <footer className="footer">
-        <p>Arte Patagonia - Portafolio artístico inspirado en el sur de Chile.</p>
+        <div>
+          <strong>Pintando Aves Patagonia</strong>
+          <p>Arte, aves y naturaleza del sur de Chile.</p>
+        </div>
+        <nav aria-label="Links de contacto del pie de página">
+          <a href={contactLinks.whatsapp} target="_blank" rel="noreferrer">
+            WhatsApp
+          </a>
+          <a href={contactLinks.instagram} target="_blank" rel="noreferrer">
+            Instagram
+          </a>
+          <a href={contactLinks.email}>Correo</a>
+        </nav>
       </footer>
     </main>
   )
